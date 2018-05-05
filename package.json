@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/JanoshRiebesell/secret-hitler-backend#readme",
   "dependencies": {
+    "dotenv": "^5.0.1",
     "nodemon": "^1.17.3",
     "socket.io": "^2.1.0"
   }
