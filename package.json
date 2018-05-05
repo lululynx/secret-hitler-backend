@@ -1,0 +1,31 @@
+{
+  "name": "secret-hitler-backend",
+  "version": "1.0.0",
+  "description": "Backend for a React Native implementation of the hidden identity party game 'Secret Hitler'.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JanoshRiebesell/secret-hitler-backend.git"
+  },
+  "keywords": [
+    "secret",
+    "hitler",
+    "backend",
+    "game",
+    "socket.io"
+  ],
+  "author": "Oscar Magnusson Luciu Joncourt, Kryshlynn Florante, Diego, Janosh Riebesell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JanoshRiebesell/secret-hitler-backend/issues"
+  },
+  "homepage": "https://github.com/JanoshRiebesell/secret-hitler-backend#readme",
+  "dependencies": {
+    "nodemon": "^1.17.3",
+    "socket.io": "^2.1.0"
+  }
+}
