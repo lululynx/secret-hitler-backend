@@ -4,6 +4,7 @@
 
 1. Create new game
 2. Join existing game
+3. Player exits game
 
 ## Player Methods
 
@@ -12,4 +13,3 @@
 3. Choose policy card(s)
 4. President executes player
 5. President or chancellor vetos
-6. Player exits game

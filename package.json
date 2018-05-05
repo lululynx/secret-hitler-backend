@@ -16,10 +16,9 @@
     "hitler",
     "backend",
     "game",
-    "socket.io",
-    "koa"
+    "socket.io"
   ],
-  "author": "Oscar Magnusson Luciu Joncourt, Krysh, Diego, Janosh Riebesell",
+  "author": "Oscar Magnusson Luciu Joncourt, Kryshlynn Florante, Diego, Janosh Riebesell",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/JanoshRiebesell/secret-hitler-backend/issues"
