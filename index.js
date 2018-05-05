@@ -14,15 +14,14 @@ io.on('connection', (client) => {
   client.on('leaveGame', metaController.leaveGame);
 
   // player methods
-  client.on('voteOnChancellor', metaController.voteOnChancellor);
-  client.on('suggestChancellor', metaController.suggestChancellor);
-  client.on('pickPolicies', metaController.pickPolicies);
-  client.on('executePlayer', metaController.executePlayer);
-  client.on('vetoPolicy', metaController.vetoPolicy);
+  client.on('voteOnChancellor', playerController.voteOnChancellor);
+  client.on('suggestChancellor', playerController.suggestChancellor);
+  client.on('pickPolicies', playerController.pickPolicies);
+  client.on('executePlayer', playerController.executePlayer);
+  client.on('vetoPolicy', playerController.vetoPolicy);
 
   client.on('disconnect', () => {
     console.log(`client ${client.id} disconnected`);
-    handleDisconnect();
   })
 
   client.on('error', (err) => {
@@ -34,8 +33,8 @@ io.on('connection', (client) => {
 if (!module.parent) {
   const ip = process.env.ip || 'localhost';
   const port = process.env.port || 3000;
-  server.listen(port, (err) => {
-    if (err) throw err;
+  server.listen(port, ip, (err) => {
+    // if (err) throw err;
     console.log(`Server running at http://${ip}:${port}`);
   });
 }
