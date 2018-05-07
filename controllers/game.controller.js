@@ -2,11 +2,6 @@
 
 const games = {};
 
-// returns random 6 integer ID 
-const getId = () => {
-  return [...Array(6)].map(el => Math.floor(10 * Math.random())).join('');
-}
-
 const getInitialGameState = () => {
   return {
     turnCount: 0,
@@ -66,10 +61,10 @@ const setRoles = (gameId) => {
   setPlayerFactions(numberOfFascist, playerList);
 }
 
-module.exports.createGame = (user) => {
+module.exports.createGame = (user, clientId) => {
   const player = createPlayer(user);
   const game = {
-    id: getId(),
+    id: clientId,
     initiator: user,
     playerList: [player],
     gameState: getInitialGameState(),
