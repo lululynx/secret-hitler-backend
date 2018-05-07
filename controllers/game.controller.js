@@ -55,11 +55,11 @@ const setRoles = (gameId) => {
   const numberOfFascists = (numberOfPlayers > 8 ? 3 : numberOfPlayers > 6 ? 2 : 1) 
 
   //choose president
-  presidentIndex = Math.floor(numberOfPlayers * Math.random());
+  const presidentIndex = Math.floor(numberOfPlayers * Math.random());
   playerList[presidentIndex].president = true;
 
   //choose hitler
-  hitlerIndex = Math.floor(numberOfPlayers * Math.random());
+  const hitlerIndex = Math.floor(numberOfPlayers * Math.random());
   playerList[hitlerIndex].hitler = true;
   playerList[hitlerIndex].faction = 'fascist';
 
