@@ -8,6 +8,8 @@ exports.getInitialGameState = () => {
     numberOfLiberalPolicies: 0,
     numberOfFascistPolicies: 0,
     currentPresident: undefined,
+    suggestedChancellor: null,
+    voteCount: 0,
     currentChancellor: undefined,
     hitler: undefined,
     electionFailCount: 0,
