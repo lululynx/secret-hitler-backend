@@ -1,7 +1,7 @@
 'use strict';
 
-import getInitialGameState from '../models/game.model';
-import createPlayer from '../models/game.model';
+const getInitialGameState = require('../models/game.model').getInitialGameState;
+const createPlayer = require('../models/player.model').createPlayer;
 
 const games = {};
 
@@ -41,7 +41,7 @@ const setRoles = (gameId) => {
   return game;
 }
 
-module.exports.createGame = (clientId, user) => {
+exports.createGame = (clientId, user) => {
   const player = createPlayer(user);
   const game = {
     id: clientId,
@@ -54,18 +54,18 @@ module.exports.createGame = (clientId, user) => {
   return game.playerList;
 }
 
-module.exports.joinGame = (gameId, user) => {
+exports.joinGame = (gameId, user) => {
   const player = createPlayer(user);
   if (!games[gameId]) return 'No game found with id ' + gameId;
   games[gameId].playerList.push(player);
   return games[gameId].playerList;
 }
 
-module.exports.startGame = (gameId) => {
+exports.startGame = (gameId) => {
   return setRoles(gameId);
 }
 
-module.exports.leaveGame = (user, gameId) => {
+exports.leaveGame = (user, gameId) => {
   const index = games[gameId].playerList.findIndex(player => player.user.id === user.id);
   games[gameId].playerList.splice(index, 1);
   return games[gameId].playerList;
