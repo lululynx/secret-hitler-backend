@@ -12,5 +12,6 @@ exports.getInitialGameState = () => {
     hitler: undefined,
     electionFailCount: 0,
     vetoPowerUnlocked: false,
+    gameOver: false,
   }
 }

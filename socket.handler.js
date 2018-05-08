@@ -12,15 +12,15 @@ exports.socketHandler = (io) => {
     // game methods
     client.on('createGame', (user) => {
       console.log('create game with id ', client.id);
-      const playerList = gameController.createGame(client.id, user);
+      const game = gameController.createGame(client.id, user);
       client.join(client.id);
-      io.to(client.id).emit('gameCreated', playerList);
+      io.to(client.id).emit('gameCreated', game);
     });
 
     client.on('joinGame', (gameId, user) => {
       client.join(gameId);
-      const playerList = gameController.joinGame(gameId, user);
-      io.to(gameId).emit('playerJoinedGame', playerList);
+      const game = gameController.joinGame(gameId, user);
+      io.to(gameId).emit('playerJoinedGame', game);
     });
 
     client.on('startGame', (gameId) => {

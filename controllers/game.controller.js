@@ -48,17 +48,16 @@ exports.createGame = (clientId, user) => {
     initiator: user,
     playerList: [player],
     gameState: getInitialGameState(),
-    gameOver: false
   }
   games[game.id] = game;
-  return game.playerList;
+  return game;
 }
 
 exports.joinGame = (gameId, user) => {
   const player = createPlayer(user);
   if (!games[gameId]) return 'No game found with id ' + gameId;
   games[gameId].playerList.push(player);
-  return games[gameId].playerList;
+  return games[gameId];
 }
 
 exports.startGame = (gameId) => {
@@ -68,5 +67,5 @@ exports.startGame = (gameId) => {
 exports.leaveGame = (user, gameId) => {
   const index = games[gameId].playerList.findIndex(player => player.user.id === user.id);
   games[gameId].playerList.splice(index, 1);
-  return games[gameId].playerList;
+  return games[gameId];
 }
