@@ -1,32 +1,9 @@
 'use strict';
 
+import getInitialGameState from '../models/game.model';
+import createPlayer from '../models/game.model';
+
 const games = {};
-
-const getInitialGameState = () => {
-  return {
-    turnCount: 0,
-    numberOfLiberals: 0,
-    numberOfFascists: 0,
-    numberOfLiberalPolicies: 0,
-    numberOfFascistPolicies: 0,
-    currentPresident: undefined,
-    currentChancellor: undefined,
-    hitler: undefined,
-    electionFailCount: 0,
-    vetoPowerUnlocked: false,
-  }
-}
-
-const createPlayer = (user) => {
-  return {
-    user: user,
-    faction: undefined,
-    hitler: false,
-    president: false,
-    chancellor: false,
-    executed: false
-  }
-}
 
 const setPlayerFactions = (numberOfFascists, playerList) => {
   let numberOfLiberals = playerList.length - numberOfFascists - 1;
