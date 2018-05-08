@@ -2,8 +2,8 @@
 
 const io = require('./index');
 
-const gameController = require('./controllers/game.controller');
-const playerController = require('./controllers/player.controller');
+const metaController = require('./controllers/meta.controller');
+const actionController = require('./controllers/action.controller');
 
 exports.socketHandler = (io) => {
   io.on('connection', (client) => {
@@ -11,33 +11,33 @@ exports.socketHandler = (io) => {
 
     // game methods
     client.on('createGame', (user) => {
-      console.log('create game with id ', client.id);
-      const game = gameController.createGame(client.id, user);
+      console.log('created game with id ', client.id);
+      const game = metaController.createGame(client.id, user);
       client.join(client.id);
       io.to(client.id).emit('gameCreated', game);
     });
 
     client.on('joinGame', (gameId, user) => {
       client.join(gameId);
-      const game = gameController.joinGame(gameId, user);
+      const game = metaController.joinGame(gameId, user);
       io.to(gameId).emit('playerJoinedGame', game);
     });
 
     client.on('startGame', (gameId) => {
-      const game = gameController.startGame(gameId);
-      io.to(game.id).emit('gameStarted', game);
+      const game = metaController.startGame(gameId);
+      io.to(gameId).emit('gameStarted', game);
     });
 
-    client.on('leaveGame', (user, gameId) => {
-      io.to(gameId).emit('playerLeftGame', gameController.leaveGame());
+    client.on('leaveGame', (gameId, user) => {
+      io.to(gameId).emit('playerLeftGame', metaController.leaveGame());
     });
 
     // player methods
-    client.on('voteOnChancellor', playerController.voteOnChancellor);
-    client.on('suggestChancellor', playerController.suggestChancellor);
-    client.on('pickPolicies', playerController.pickPolicies);
-    client.on('executePlayer', playerController.executePlayer);
-    client.on('vetoPolicy', playerController.vetoPolicy);
+    client.on('voteOnChancellor', actionController.voteOnChancellor);
+    client.on('suggestChancellor', actionController.suggestChancellor);
+    client.on('pickPolicies', actionController.pickPolicies);
+    client.on('executePlayer', actionController.executePlayer);
+    client.on('vetoPolicy', actionController.vetoPolicy);
 
     client.on('disconnect', () => {
       console.log(`client ${client.id} disconnected`);

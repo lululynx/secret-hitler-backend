@@ -19,14 +19,12 @@ const setPlayerFactions = (numberOfFascists, playerList) => {
   })
 }
 
-const setRoles = (gameId) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
+const setRoles = (game) => {
   const playerList = game.playerList;
   const numberOfPlayers = playerList.length;
 
   //sets number of fascists (excluding hitler)
-  const numberOfFascists = (numberOfPlayers > 8 ? 3 : numberOfPlayers > 6 ? 2 : 1)
+  const numberOfFascists = (numberOfPlayers > 8 ? 3 : numberOfPlayers > 6 ? 2 : 1);
 
   //choose president
   const presidentIndex = Math.floor(numberOfPlayers * Math.random());
@@ -48,23 +46,26 @@ exports.createGame = (clientId, user) => {
     initiator: user,
     playerList: [player],
     gameState: getInitialGameState(),
-  }
+  };
   games[game.id] = game;
   return game;
 }
 
 exports.joinGame = (gameId, user) => {
+  const game = games[gameId];
+  if (!game) return 'No game found with id ' + gameId;
   const player = createPlayer(user);
-  if (!games[gameId]) return 'No game found with id ' + gameId;
-  games[gameId].playerList.push(player);
-  return games[gameId];
+  game.playerList.push(player);
+  return game;
 }
 
 exports.startGame = (gameId) => {
-  return setRoles(gameId);
+  const game = games[gameId];
+  if (!game) return 'No game found with id ' + gameId;
+  return setRoles(game);
 }
 
-exports.leaveGame = (user, gameId) => {
+exports.leaveGame = (gameId, user) => {
   const index = games[gameId].playerList.findIndex(player => player.user.id === user.id);
   games[gameId].playerList.splice(index, 1);
   return games[gameId];
