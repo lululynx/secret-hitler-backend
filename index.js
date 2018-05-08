@@ -4,7 +4,6 @@ const server = require('http').createServer();
 
 require('dotenv').config();
 
-
 const io = require('socket.io')(server);
 
 const gameController = require('./controllers/game.controller');
@@ -12,26 +11,28 @@ const playerController = require('./controllers/player.controller');
 
 io.on('connection', (client) => {
   console.log(`connected to client ${client.id}`);
-  const clientId = client.id;
 
   // game methods
   client.on('createGame', (user) => {
-    console.log('create game, gameId: ', clientId);
-    const game = gameController.createGame(user, clientId);
-    client.join(game.id);
-    client.to(game.id).emit('gameCreated', 'hej');
+    console.log('create game with id ', client.id);
+    const playerList = gameController.createGame(client.id, user);
+    client.join(client.id);
+    io.to(client.id).emit('gameCreated', playerList);
   });
-  client.on('joinGame', (user, gameId) => {
-    client.join(gameId)
-    const playerList = gameController.joinGame(user, gameId);
-    client.to(gameId).emit('playerJoinedGame', playerList);
+
+  client.on('joinGame', (gameId, user) => {
+    client.join(gameId);
+    const playerList = gameController.joinGame(gameId, user);
+    io.to(gameId).emit('playerJoinedGame', playerList);
   });
+
   client.on('startGame', (gameId) => {
-    const game = gameController.startGame();
-    client.to(game.id).emit('gameStarted', game);
+    const game = gameController.startGame(gameId);
+    io.to(game.id).emit('gameStarted', game);
   });
+
   client.on('leaveGame', (user, gameId) => {
-    client.to(gameId).emit('playerLeftGame', gameController.leaveGame());
+    io.to(gameId).emit('playerLeftGame', gameController.leaveGame());
   });
 
   // player methods
@@ -50,7 +51,6 @@ io.on('connection', (client) => {
     console.log(err);
   })
 })
-
 
 if (!module.parent) {
   const ip = 'localhost';
