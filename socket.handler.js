@@ -33,8 +33,8 @@ exports.socketHandler = (io) => {
     });
 
     // player methods
-    client.on('voteOnChancellor', actionController.voteOnChancellor);
     client.on('suggestChancellor', actionController.suggestChancellor);
+    client.on('voteOnChancellor', actionController.voteOnChancellor);
     client.on('pickPolicies', actionController.pickPolicies);
     client.on('executePlayer', actionController.executePlayer);
     client.on('vetoPolicy', actionController.vetoPolicy);
