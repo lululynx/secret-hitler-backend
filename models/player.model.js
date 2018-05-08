@@ -1,4 +1,6 @@
-export const createPlayer = (user) => {
+'use strict';
+
+exports.createPlayer = (user) => {
   return {
     user: user,
     faction: undefined,

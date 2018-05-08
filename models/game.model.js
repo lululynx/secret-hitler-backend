@@ -1,4 +1,6 @@
-export const getInitialGameState = () => {
+'use strict';
+
+exports.getInitialGameState = () => {
   return {
     turnCount: 0,
     numberOfLiberals: 0,
