@@ -1,6 +1,6 @@
-'use strict';
+const Player = require('./player.model').Player;
 
-exports.getInitialGameState = () => {
+const getInitialGameState = () => {
   return {
     numberOfLiberals: 0,
     numberOfFascists: 0,
@@ -26,6 +26,29 @@ exports.getInitialGameState = () => {
     gameOver: false,
     winningFaction: undefined,
     askPresidentToExecutePlayer: true,
-    executedPlayers: []
+    executedPlayers: [],
+  }
+}
+
+exports.Game = class Game {
+  constructor(clientId, user) {
+    this.id = clientId;
+    this.initiator = user;
+    this.playerList = [new Player(user)];
+    this.gameState = getInitialGameState();
+  }
+
+  set(prop, value) {
+    this[prop] = value;
+  }
+
+  get(prop) {
+    if (prop) return this[prop];
+    return {
+      id: this.id,
+      initiator: this.initiator,
+      playerList: this.playerList,
+      ...this.gameState,
+    }
   }
 }
