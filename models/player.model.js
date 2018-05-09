@@ -7,6 +7,7 @@ exports.createPlayer = (user) => {
     hitler: false,
     president: false,
     chancellor: false,
-    executed: false
+    executed: false,
+    chancellorVote: null,
   }
 }

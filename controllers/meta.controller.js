@@ -3,7 +3,9 @@
 const getInitialGameState = require('../models/game.model').getInitialGameState;
 const createPlayer = require('../models/player.model').createPlayer;
 
-const games = {};
+const actionHelpers = require('./action.helpers');
+
+const games = exports.games = {};
 
 const setPlayerFactions = (numberOfFascists, playerList) => {
   let numberOfLiberals = playerList.length - numberOfFascists - 1;
@@ -19,14 +21,12 @@ const setPlayerFactions = (numberOfFascists, playerList) => {
   })
 }
 
-const setRoles = (gameId) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
+const setRoles = (game) => {
   const playerList = game.playerList;
   const numberOfPlayers = playerList.length;
 
   //sets number of fascists (excluding hitler)
-  const numberOfFascists = (numberOfPlayers > 8 ? 3 : numberOfPlayers > 6 ? 2 : 1)
+  const numberOfFascists = (numberOfPlayers > 8 ? 3 : numberOfPlayers > 6 ? 2 : 1);
 
   //choose president
   const presidentIndex = Math.floor(numberOfPlayers * Math.random());
@@ -38,7 +38,6 @@ const setRoles = (gameId) => {
   playerList[hitlerIndex].faction = 'fascist';
 
   setPlayerFactions(numberOfFascists, playerList);
-  return game;
 }
 
 exports.createGame = (clientId, user) => {
@@ -47,26 +46,31 @@ exports.createGame = (clientId, user) => {
     id: clientId,
     initiator: user,
     playerList: [player],
-    gameState: getInitialGameState(),
-    gameOver: false
-  }
+    ...getInitialGameState(),
+  };
   games[game.id] = game;
-  return game.playerList;
+  return game;
 }
 
 exports.joinGame = (gameId, user) => {
+  const game = games[gameId];
+  if (!game) return 'No game found with id ' + gameId;
   const player = createPlayer(user);
-  if (!games[gameId]) return 'No game found with id ' + gameId;
-  games[gameId].playerList.push(player);
-  return games[gameId].playerList;
+  game.playerList.push(player);
+  return game;
 }
 
 exports.startGame = (gameId) => {
-  return setRoles(gameId);
+  const game = games[gameId];
+  if (!game) return 'No game found with id ' + gameId;
+  setRoles(game);
+  actionHelpers.drawThreePolicies(game);
+  game.message = 'showRoles';
+  return game;
 }
 
-exports.leaveGame = (user, gameId) => {
+exports.leaveGame = (gameId, user) => {
   const index = games[gameId].playerList.findIndex(player => player.user.id === user.id);
   games[gameId].playerList.splice(index, 1);
-  return games[gameId].playerList;
+  return games[gameId];
 }

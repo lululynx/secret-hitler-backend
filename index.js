@@ -14,4 +14,4 @@ if (!module.parent) {
     if (err) throw err;
     console.log(`Server running at http://${ip}:${port}`);
   });
-}
+};
