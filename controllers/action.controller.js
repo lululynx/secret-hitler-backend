@@ -3,12 +3,21 @@
 const actionHelpers = require('./action.helpers');
 
 // playerId: the player suggested as chancellor
-const beginNewTurn = (gameId) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
+const beginNewTurn = (game) => {
   game.currentPresident = actionHelpers.setNextPresident(game);
   game.currentChancellor = null;
   actionHelpers.drawThreePolicies(game);
+  game.message = 'showPresident';
+  return game;
+}
+
+const shouldPresidentExecutePlayer = (game) => {
+  if (game.numberOfFascistPolicies === 4 || game.numberOfFascistPolicies === 5) {
+    game.message = 'askPresidentToExecutePlayer';
+    return game;
+  }
+  else beginNewTurn(game);
+}
 
 exports.acknowledge = (game, message) => {
   switch (message) {
@@ -51,22 +60,19 @@ exports.acknowledge = (game, message) => {
       break;
     default:
       return 'Unknown acknowledged message';
-}
+  }
 }
 
 // playerId: the player suggested as chancellor
-exports.suggestChancellor = (gameId, playerId) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
+exports.suggestChancellor = (game, playerId) => {
   game.suggestedChancellor = playerId;
+  game.message = 'voteChancellor';
   return game;
 }
 
 // playerId: the player who voted
-exports.voteOnChancellor = (gameId, playerId, vote) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
-  if (!vote === 'ja' || !vote === 'nein') return 'Invalid vote';
+exports.voteOnChancellor = (game, playerId, vote) => {
+  if (vote !== 'ja' || vote !== 'nein') return 'Invalid vote';
   if (game.voteCount === game.playerList.length) {
     actionHelpers.resetVotes(game);
   }
@@ -76,37 +82,46 @@ exports.voteOnChancellor = (gameId, playerId, vote) => {
   game.voteCount++;
   if (game.voteCount === game.playerList.length) {
     actionHelpers.evaluateVotes(game);
-    // TODO: handle execute player special power when numberOfFascistPolicies equals 4 or 5
   }
   return game;
 }
 
-exports.pickPolicies = (gameId, playerId, rejectedPolicy) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
+// used for both president and chancellor
+exports.pickPolicies = (game, playerId, rejectedPolicy) => {
   if (game.currentPresident === playerId) {
     if (![0,1,2].includes(rejectedPolicy)) return 'Invalid excluded policy';
     game.eligiblePolicies.splice(rejectedPolicy, 1);
+    if (game.numberOfFascistPolicies === 5) game.message = 'showChancellorPolicyCardsAndVetoButton';
+    else game.message = 'showChancellorPolicyCards';
   } else if (game.currentChancellor === playerId) {
     if (![0,1].includes(rejectedPolicy)) return 'Invalid excluded policy';
     game.eligiblePolicies.splice(rejectedPolicy, 1);
     game.eligiblePolicies.pop() === 'fascist'
       ? ++game.numberOfFascistPolicies
       : ++game.numberOfLiberalPolicies;
-  } else {
-    return 'Player is neither president nor chancellor and hence may not pick policies.';
-  }
+    if (game.numberOfFascistPolicies === 5) game.vetoPowerUnlocked = true;
+    game.message = 'showChosenPolicy';
+  } else return 'Player is neither president nor chancellor and hence may not pick policies.';
   return game;
 }
 
-exports.askToExecutePlayer = (socket) => {
-  console.log(socket);
+exports.executePlayer = (game, playerId) => {
+  const playerIndex = game.playerList.findIndex(player => player.user.id === playerId);
+  game.executedPlayers.push(game.playerList[playerIndex]);
+  game.playerList[playerIndex].executed = true;
+  game.playerList.splice(playerIndex, 1);
+  return beginNewTurn(game);
 }
 
-exports.executePlayer = (socket) => {
-  console.log(socket);
+exports.chancellorVetoPolicy = (game, playerId) => {
+  if (!game.currentChancellor === playerId) return 'Only chancellor can veto a policy';
+  game.message = 'givePresidentChanceToConfirmVeto';
+  return game;
 }
 
-exports.vetoPolicy = (socket) => {
-  console.log(socket);
+exports.presidentVetoPolicy = (game, playerId, veto) => {
+  if (!game.currentPresident === playerId) return 'Only president can veto a policy';
+  game.electionFailCount++;
+  game.eligiblePolicies = [];
+  return beginNewTurn(game);
 }
