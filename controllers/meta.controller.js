@@ -3,7 +3,9 @@
 const getInitialGameState = require('../models/game.model').getInitialGameState;
 const createPlayer = require('../models/player.model').createPlayer;
 
-const games = {};
+const actionHelpers = require('./action.helpers');
+
+const games = exports.games = {};
 
 const setPlayerFactions = (numberOfFascists, playerList) => {
   let numberOfLiberals = playerList.length - numberOfFascists - 1;
@@ -61,7 +63,10 @@ exports.joinGame = (gameId, user) => {
 exports.startGame = (gameId) => {
   const game = games[gameId];
   if (!game) return 'No game found with id ' + gameId;
-  return setRoles(game);
+  setRoles(game);
+  actionHelpers.drawThreePolicies(game);
+  game.message = 'showRoles';
+  return game;
 }
 
 exports.leaveGame = (gameId, user) => {
