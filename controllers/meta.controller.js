@@ -36,7 +36,6 @@ const setRoles = (game) => {
   playerList[hitlerIndex].faction = 'fascist';
 
   setPlayerFactions(numberOfFascists, playerList);
-  return game;
 }
 
 exports.createGame = (clientId, user) => {
@@ -45,7 +44,7 @@ exports.createGame = (clientId, user) => {
     id: clientId,
     initiator: user,
     playerList: [player],
-    gameState: getInitialGameState(),
+    ...getInitialGameState(),
   };
   games[game.id] = game;
   return game;
