@@ -6,12 +6,14 @@ exports.getInitialGameState = () => {
     numberOfFascists: 0,
     numberOfLiberalPolicies: 0,
     numberOfFascistPolicies: 0,
-    playerRoleAcknowledgedCount: 0,
-    otherFascistsAcknowledgedCount: 0,
-    presidentAcknowledgedCount: 0,
-    chancellorAcknowledgedCount: 0,
-    chosenPolicyAcknowledgedCount: 0,
-    vetoPowerAcknowledgedCount: 0,
+    acknowledgeCounts: {
+      playerRole: 0,
+      otherFascists: 0,
+      president: 0,
+      chancellor: 0,
+      chosenPolicy: 0,
+      vetoPower: 0,
+    },
     turnCount: 0,
     hitler: undefined,
     currentPresident: undefined,
@@ -24,5 +26,6 @@ exports.getInitialGameState = () => {
     gameOver: false,
     winningFaction: undefined,
     askPresidentToExecutePlayer: true,
+    executedPlayers: []
   }
 }
