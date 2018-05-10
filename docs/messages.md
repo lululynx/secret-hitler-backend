@@ -5,7 +5,7 @@ The following table documents all messages and their payloads sent from the fron
 | message to front end (equals game.message)                   | president (**chancellor*)                        | all                                                          | message from front end | payload to backend |
 | ------------------------------------------------------------ | :----------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------- | --------------- |
 | **showRoles**                                                |                                                              | show each player his or her role ('ok' button + timer) | acknowledgePlayerRole           | gameId |
-| **showFascists**                                             |                                                              | show **only fascists** all other fascists on the screen (timer, no 'ok' button to not reveal fascist identities to liberals) | acknowledgeOtherFascists        | gameId |
+| **showFascists**                                             |                                                              | show **only fascists** all other fascists on the screen (timer, no 'ok' button to not reveal fascist identities to liberals) | acknowledgeFascists        | gameId |
 | **showPresident**                                            |                                                              | show each player who current president ('ok' button + timer) | acknowledgePresident            | gameId |
 | **suggestChancellor**                                        | show president all other players (clickable)                 |                                                              | suggestChancellor | gameId, playerId |
 | **voteOnChancellor**                                         |                                                              | show each player suggested chancellor ('ja' + 'nein' buttons) | voteOnChancellor | gameId, playerId, vote ('ja'/'nein') |
@@ -17,7 +17,7 @@ The following table documents all messages and their payloads sent from the fron
 | if (numberOfFascistPolicies = 4 or 5) **askPresidentToExecutePlayer** | show president all players and pick one to execute           |                                                              | executePlayer | gameId, playerId (to execute) |
 | if (numberOfFascistPolicies = 5) **activateVetoPower** (not implemented as message, only toggle vetoPowerUnlocked on game) |                                                              | show all that veto power is activated (notification) | acknowledgeVetoPower            | gameId |
 | **showChancellorPolicyCardsAndVetoButton** | **show chancellor two policies + veto button* |  | chancellorVetoPolicy | gameId, playerId |
-| **givePresidentChanceToConfirmVeto** | inform president that chancellor vetoed, ask to confirm or decline veto |  | presidentVetoPolicy | gameId, playerId, veto (true/false) |
+| **letPresidentDecideVeto** | inform president that chancellor vetoed, ask to confirm or decline veto |  | presidentVetoPolicy | gameId, playerId, veto (true/false) |
 
 ### Comments
 
