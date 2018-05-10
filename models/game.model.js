@@ -97,6 +97,10 @@ exports.Game = class Game {
       this.currentPresident = this.playerList[presidentIndex + 1].user.id;
     }
   }
+
+  rejectEligiblePolicy(rejectedPolicy) {
+    this.eligiblePolicies.splice(rejectedPolicy, 1);
+  }
   }
 
   set(prop, value) {
