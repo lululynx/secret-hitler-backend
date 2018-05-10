@@ -55,12 +55,9 @@ exports.pickPolicies = ({game, playerId, rejectedPolicy}) => {
   };
 }
 
-exports.executePlayer = (game, playerId) => {
-  const playerIndex = game.playerList.findIndex(player => player.user.id === playerId);
-  game.executedPlayers.push(game.playerList[playerIndex]);
-  game.playerList[playerIndex].executed = true;
-  game.playerList.splice(playerIndex, 1);
-  return beginNewTurn(game);
+exports.executePlayer = ({game, playerId}) => {
+  game.executePlayer(playerId);
+  beginNewTurn(game);
 }
 
 exports.chancellorVetoPolicy = (game, playerId) => {
