@@ -100,7 +100,7 @@ exports.pickPolicies = (game, playerId, rejectedPolicy) => {
       ? ++game.numberOfFascistPolicies
       : ++game.numberOfLiberalPolicies;
     if (game.numberOfFascistPolicies === 5) game.vetoPowerUnlocked = true;
-    game.message = 'showChosenPolicy';
+    game.message = 'showPlayersChosenPolicy';
   } else return 'Player is neither president nor chancellor and hence may not pick policies.';
   return game;
 }
