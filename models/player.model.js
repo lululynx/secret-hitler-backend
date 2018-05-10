@@ -16,4 +16,28 @@ exports.Player = class Player {
   execute() {
     this.executed = true;
   }
+
+  makePresident() {
+    this.president = true;
+  }
+
+  makeChancellor() {
+    this.chancellor = true;
+  }
+
+  makeFascist() {
+    this.faction = 'fascist';
+  }
+
+  makeLiberal() {
+    this.faction = 'liberal';
+  }
+
+  makeHitler() {
+    this.hitler = true;
+  }
+
+  isHitler() {
+    return this.hitler;
+  }
 }
