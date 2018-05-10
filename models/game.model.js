@@ -43,6 +43,48 @@ exports.Game = class Game {
     this.message = message;
   }
 
+  addPlayer(player) {
+    this.playerList.push(player);
+  }
+
+  // only works in the waiting room before the game starts
+  removePlayer(player) {
+    // TODO: handle the case where player leaves game in session
+    const index = this.playerList.findIndex(player => player.user.id === user.id);
+    this.playerList.splice(index, 1);
+  }
+
+  setRoles() {
+    const numberOfPlayers = this.playerList.length;
+    //sets number of fascists (excluding hitler)
+    this.numberOfFascists = (numberOfPlayers > 8 ? 4 : numberOfPlayers > 6 ? 3 : 2);
+    this.numberOfLiberals = numberOfPlayers - this.numberOfFascists;
+    //choose president
+    const presidentIndex = Math.floor(numberOfPlayers * Math.random());
+    let player = this.playerList[presidentIndex];
+    player.makePresident();
+    //choose hitler
+    const hitlerIndex = Math.floor(numberOfPlayers * Math.random());
+    player = this.playerList[hitlerIndex];
+    player.makeHitler();
+    player.makeFascist();
+  }
+
+  assignPlayersFactions() {
+    let numberOfFascists = this.numberOfFascists;
+    let numberOfLiberals = this.numberOfLiberals;
+    this.playerList.forEach(player => {
+      if (player.isHitler()) return;
+      if (Math.random() * numberOfFascists > Math.random() * numberOfLiberals) {
+        player.makeFascist();
+        --numberOfFascists;
+      } else {
+        player.makeLiberal();
+        --numberOfLiberals;
+      }
+    })
+  }
+
   setSuggestedChancellor(playerId) {
     this.suggestedChancellor = playerId;
   }
