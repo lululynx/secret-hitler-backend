@@ -1,11 +1,11 @@
 'use strict';
 
-const getInitialGameState = require('../models/game.model').getInitialGameState;
+const GameList = require('../models/gameList.model');
 const createPlayer = require('../models/player.model').createPlayer;
 
 const actionHelpers = require('./action.helpers');
 
-const games = exports.games = {};
+const games = exports.games = new GameList();
 
 const setPlayerFactions = (numberOfFascists, playerList) => {
   let numberOfLiberals = playerList.length - numberOfFascists - 1;
@@ -41,36 +41,21 @@ const setRoles = (game) => {
 }
 
 exports.createGame = (clientId, user) => {
-  const player = createPlayer(user);
-  const game = {
-    id: clientId,
-    initiator: user,
-    playerList: [player],
-    ...getInitialGameState(),
-  };
-  games[game.id] = game;
-  return game;
+  return new Game(clientId, user);
 }
 
-exports.joinGame = (gameId, user) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
+exports.joinGame = (game, user) => {
   const player = createPlayer(user);
   game.playerList.push(player);
-  return game;
 }
 
-exports.startGame = (gameId) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
+exports.startGame = (game) => {
   setRoles(game);
   actionHelpers.drawThreePolicies(game);
   game.message = 'showRoles';
-  return game;
 }
 
-exports.leaveGame = (gameId, user) => {
-  const index = games[gameId].playerList.findIndex(player => player.user.id === user.id);
-  games[gameId].playerList.splice(index, 1);
-  return games[gameId];
+exports.leaveGame = (game, user) => {
+  const index = game.playerList.findIndex(player => player.user.id === user.id);
+  game.playerList.splice(index, 1);
 }
