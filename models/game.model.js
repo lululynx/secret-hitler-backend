@@ -64,6 +64,12 @@ exports.Game = class Game {
     return this.playerList.find(player => player.user.id === playerId);
   }
 
+  drawThreePolicies() {
+    this.eligiblePolicies = [...Array(3)].map(policy => {
+      return Math.random() < 2/3 ? 'fascist' : 'liberal';
+    });
+  }
+
   }
 
   set(prop, value) {
