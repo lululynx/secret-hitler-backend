@@ -101,6 +101,12 @@ exports.Game = class Game {
   rejectEligiblePolicy(rejectedPolicy) {
     this.eligiblePolicies.splice(rejectedPolicy, 1);
   }
+
+  enactPolicy() {
+    this.eligiblePolicies.pop() === 'fascist'
+      ? ++game.numberOfFascistPolicies
+      : ++game.numberOfLiberalPolicies;
+  }
   }
 
   set(prop, value) {
