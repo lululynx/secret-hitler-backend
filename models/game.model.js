@@ -87,6 +87,16 @@ exports.Game = class Game {
     }
   }
 
+  setNextPresident() {
+    const presidentIndex = this.playerList.findIndex(player => {
+      return player.id === this.currentPresident;
+    });
+    if (presidentIndex === (playerList.length - 1)) {
+      this.currentPresident = this.playerList[0].user.id;
+    } else {
+      this.currentPresident = this.playerList[presidentIndex + 1].user.id;
+    }
+  }
   }
 
   set(prop, value) {
