@@ -35,7 +35,9 @@ exports.Game = class Game {
     this.id = clientId;
     this.initiator = user;
     this.playerList = [new Player(user)];
-    this.gameState = getInitialGameState();
+    this.message = null;
+    Object.assign(this, getInitialGameState());
+  }
   }
 
   set(prop, value) {
