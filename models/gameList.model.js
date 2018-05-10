@@ -12,11 +12,11 @@ class GameList {
   }
 
   get(id) {
-    return this._games[game.id];
+    return this._games[id];
   }
 }
 
 const instance = new GameList();
 Object.freeze(instance);
 
-export default instance;
+exports.gameList = instance;
