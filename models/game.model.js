@@ -8,7 +8,7 @@ const getInitialGameState = () => {
     numberOfFascistPolicies: 0,
     acknowledgeCounts: {
       playerRole: 0,
-      otherFascists: 0,
+      fascists: 0,
       president: 0,
       chancellor: 0,
       chosenPolicy: 0,
@@ -19,7 +19,7 @@ const getInitialGameState = () => {
     currentPresident: undefined,
     currentChancellor: undefined,
     suggestedChancellor: null,
-    voteCount: 0,
+    chancellorVoteCount: 0,
     eligiblePolicies: [undefined, undefined, undefined],
     electionFailCount: 0,
     vetoPowerUnlocked: false,
