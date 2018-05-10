@@ -34,36 +34,16 @@ exports.socketHandler = (io) => {
 
     // action methods
     client.on('messageFromFrontEnd', (message, payload) => {
-      const {gameId, playerId, vote, rejectedPolicy} = payload;
+      const {gameId, playerId} = payload;
       const game = games[gameId];
       if (!game) io.to(gameId).emit('gameNotFound', 'No game found with id ' + gameId);
-
-      switch (message) {
-        case 'acknowledgePlayerRole':
-          io.to(gameId).emit('newGameState', actionController.acknowledgePlayerRole(game, message));
-        case 'acknowledgeOtherFascists':
-          io.to(gameId).emit('newGameState', actionController.acknowledgeOtherFascists(game, message));
-        case 'acknowledgePresident':
-          io.to(gameId).emit('newGameState', actionController.acknowledgePresident(game, message));
-        case 'suggestChancellor':
-          io.to(gameId).emit('newGameState', actionController.suggestChancellor(game, playerId));
-        case 'voteOnChancellor':
-          io.to(gameId).emit('newGameState', actionController.voteOnChancellor(game, playerId, vote));
-        case 'acknowledgeChancellor':
-          io.to(gameId).emit('newGameState', actionController.acknowledgeChancellor(game, message));
-        case 'pickPolicies':
-          io.to(gameId).emit('newGameState', actionController.pickPolicies(game, playerId, rejectedPolicy));
-        case 'acknowledgeChosenPolicy':
-          io.to(gameId).emit('newGameState', actionController.acknowledgeChosenPolicy(game, message));
-        case 'executePlayer':
-          io.to(gameId).emit('newGameState', actionController.executePlayer(game, playerId));
-        case 'chancellorVetoPolicy':
-          io.to(gameId).emit('newGameState', actionController.chancellorVetoPolicy(game, playerId));
-        case 'presidentVetoPolicy':
-          io.to(gameId).emit('newGameState', actionController.presidentVetoPolicy(game, playerId, veto));
+      if (playerId && !game.getPlayer(playerId)) {
+        io.to(gameId).emit('playerNotFound', `Invalid player id ${playerId} for game with id ${gameId}`);
       }
+      payload.game = game;
+      actionController[message](payload);
+      io.to(gameId).emit('newGameState', game);
     })
-
 
     client.on('disconnect', () => {
       console.log(`client ${client.id} disconnected`);
