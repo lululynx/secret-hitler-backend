@@ -47,6 +47,11 @@ exports.Game = class Game {
     this.suggestedChancellor = playerId;
   }
 
+  voteComplete() {
+    return this.chancellorVoteCount === this.playerList.length;
+  }
+
+  resetVotes() {
   }
 
   set(prop, value) {
