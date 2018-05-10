@@ -111,19 +111,48 @@ exports.Game = class Game {
   playerIsPresident(playerId) {
     return this.currentPresident === playerId;
   }
+
+  playerIsChancellor(playerId) {
+    return this.currentPresident === playerId;
   }
 
-  set(prop, value) {
-    this[prop] = value;
+  activateVetoPowerIfAppropriate() {
+    if (this.numberOfFascistPolicies === 5) this.vetoPowerUnlocked = true;
   }
 
-  get(prop) {
-    if (prop) return this[prop];
-    return {
-      id: this.id,
-      initiator: this.initiator,
-      playerList: this.playerList,
-      ...this.gameState,
+  executePlayer(playerId) {
+    const playerIndex = this.playerList.findIndex(player => player.user.id === playerId);
+    const player = this.playerList[playerIndex];
+    player.execute();
+    this.executedPlayers.push(player);
+    this.playerList.splice(playerIndex, 1);
+  }
+
+  incrementElectionFailCount() {
+    ++this.electionFailCount;
+  }
+
+  presidentShouldExecutePlayer() {
+    if (this.numberOfFascistPolicies === 4 || this.numberOfFascistPolicies === 5) return true;
+    else return false;
+  }
+
+  incrementAcknowledgeCount(message, countName) {
+    ++this.acknowledgeCounts[countName];
+    if (this.acknowledgeCounts[countName] === this.playerList.length) {
+      return this.handleAcknowledgeCountReached(message);
     }
+  }
+
+  handleAcknowledgeCountReached(message) {
+    this.acknowledgeCounts[countName] = 0;
+    const messageMap = {
+      acknowledgePlayerRole: 'showFascists',
+      acknowledgeFascists: 'showPresident',
+      acknowledgePresident: 'suggestChancellor',
+      acknowledgeChancellor: 'showPresidentPolicyCards',
+      acknowledgeChosenPolicy: presidentShouldExecutePlayer() ? 'askPresidentToExecutePlayer' : 'showPresident',
+    }
+    return messageMap[message];
   }
 }
