@@ -52,6 +52,10 @@ exports.Game = class Game {
   }
 
   resetVotes() {
+    this.chancellorVoteCount = 0;
+    this.playerList.forEach(player => player.chancellorVote = null);
+  }
+
   }
 
   set(prop, value) {
