@@ -70,6 +70,10 @@ exports.Game = class Game {
     });
   }
 
+  resetChancellor() {
+    this.currentChancellor = null;
+  }
+
   }
 
   set(prop, value) {
