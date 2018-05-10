@@ -32,6 +32,7 @@ const getInitialGameState = () => {
 
 exports.Game = class Game {
   constructor(clientId, user) {
+    if (!clientId || !user) throw Error('Invalid call of Game constructor');
     this.id = clientId;
     this.initiator = user;
     this.playerList = [new Player(user)];
