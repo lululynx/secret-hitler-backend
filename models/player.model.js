@@ -8,4 +8,12 @@ exports.Player = class Player {
     this.executed = false;
     this.chancellorVote = null;
   }
+
+  castVote(vote) {
+    player.chancellorVote = vote;
+  }
+
+  execute() {
+    this.executed = true;
+  }
 }
