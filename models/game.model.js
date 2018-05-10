@@ -38,6 +38,10 @@ exports.Game = class Game {
     this.message = null;
     Object.assign(this, getInitialGameState());
   }
+
+  setMessage(message) {
+    this.message = message;
+  }
   }
 
   set(prop, value) {
