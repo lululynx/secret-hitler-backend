@@ -60,10 +60,9 @@ exports.executePlayer = ({game, playerId}) => {
   beginNewTurn(game);
 }
 
-exports.chancellorVetoPolicy = (game, playerId) => {
-  if (!game.currentChancellor === playerId) return 'Only chancellor can veto a policy';
-  game.message = 'givePresidentChanceToConfirmVeto';
-  return game;
+exports.chancellorVetoPolicy = ({game, playerId}) => {
+  if (!game.playerIsChancellor(playerId)) return 'Only chancellor can initiate vetoing a policy';
+  game.setMessage('letPresidentDecideVeto');
 }
 
 exports.presidentVetoPolicy = (game, playerId, veto) => {
