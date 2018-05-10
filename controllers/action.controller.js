@@ -36,14 +36,14 @@ exports.voteOnChancellor = ({game, playerId, vote}) => {
     if (electionPassed) game.setMessage('acknowledgeChancellor');
     else beginNewTurn(game);
   }
-  }
+}
 
 // used for both president and chancellor
 exports.pickPolicies = ({game, playerId, rejectedPolicy}) => {
   if (!game.playerIsPresident(playerId) && !game.playerIsChancellor(playerId)) {
     return 'Player is neither president nor chancellor and hence may not pick policies.'
   }
-    if (![0,1,2].includes(rejectedPolicy)) return 'Invalid excluded policy';
+  if (![0,1,2].includes(rejectedPolicy)) return 'Invalid excluded policy';
   game.rejectEligiblePolicy(rejectedPolicy);
   if (game.playerIsPresident(playerId)) {
     if (game.vetoPowerUnlocked) game.setMessage('showChancellorPolicyCardsAndVetoButton');
@@ -65,9 +65,9 @@ exports.chancellorVetoPolicy = ({game, playerId}) => {
   game.setMessage('letPresidentDecideVeto');
 }
 
-exports.presidentVetoPolicy = (game, playerId, veto) => {
-  if (!game.currentPresident === playerId) return 'Only president can veto a policy';
-  game.electionFailCount++;
-  game.eligiblePolicies = [];
-  return beginNewTurn(game);
+exports.presidentVetoPolicy = ({game, playerId, presidentVetoed}) => {
+  if (!game.playerIsPresident(playerId)) return 'Only president can confirm or decline vetoing a policy';
+  if (presidentVetoed) game.incrementElectionFailCount();
+  // TODO: add next policy to board immediately if election fail count reaches 4
+  beginNewTurn(game);
 }
