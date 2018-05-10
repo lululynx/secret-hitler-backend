@@ -107,6 +107,10 @@ exports.Game = class Game {
       ? ++game.numberOfFascistPolicies
       : ++game.numberOfLiberalPolicies;
   }
+
+  playerIsPresident(playerId) {
+    return this.currentPresident === playerId;
+  }
   }
 
   set(prop, value) {
