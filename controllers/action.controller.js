@@ -39,22 +39,20 @@ exports.voteOnChancellor = ({game, playerId, vote}) => {
   }
 
 // used for both president and chancellor
-exports.pickPolicies = (game, playerId, rejectedPolicy) => {
-  if (game.currentPresident === playerId) {
+exports.pickPolicies = ({game, playerId, rejectedPolicy}) => {
+  if (!game.playerIsPresident(playerId) && !game.playerIsChancellor(playerId)) {
+    return 'Player is neither president nor chancellor and hence may not pick policies.'
+  }
     if (![0,1,2].includes(rejectedPolicy)) return 'Invalid excluded policy';
-    game.eligiblePolicies.splice(rejectedPolicy, 1);
-    if (game.numberOfFascistPolicies === 5) game.message = 'showChancellorPolicyCardsAndVetoButton';
-    else game.message = 'showChancellorPolicyCards';
-  } else if (game.currentChancellor === playerId) {
-    if (![0,1].includes(rejectedPolicy)) return 'Invalid excluded policy';
-    game.eligiblePolicies.splice(rejectedPolicy, 1);
-    game.eligiblePolicies.pop() === 'fascist'
-      ? ++game.numberOfFascistPolicies
-      : ++game.numberOfLiberalPolicies;
-    if (game.numberOfFascistPolicies === 5) game.vetoPowerUnlocked = true;
-    game.message = 'showPlayersChosenPolicy';
-  } else return 'Player is neither president nor chancellor and hence may not pick policies.';
-  return game;
+  game.rejectEligiblePolicy(rejectedPolicy);
+  if (game.playerIsPresident(playerId)) {
+    if (game.vetoPowerUnlocked) game.setMessage('showChancellorPolicyCardsAndVetoButton');
+    else game.setMessage('showChancellorPolicyCards');
+  } else if (game.playerIsChancellor(playerId)) {
+    game.enactPolicy();
+    game.activateVetoPowerIfAppropriate();
+    game.setMessage('showPlayersChosenPolicy');
+  };
 }
 
 exports.executePlayer = (game, playerId) => {
