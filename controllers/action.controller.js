@@ -18,55 +18,10 @@ exports.acknowledge = ({game, message, countName}) => {
   }
 }
 
-exports.acknowledge = (game, message) => {
-  switch (message) {
-    case 'acknowledgePlayerRole':
-      game.acknowledgeCounts.playerRole++;
-      if (game.acknowledgeCounts.playerRole === game.playerList.length) {
-        game.message = 'showFascists';
-        return game;
-      };
-      break;
-    case 'acknowledgeOtherFascists':
-      game.acknowledgeCounts.otherFascists++;
-      if (game.acknowledgeCounts.otherFascists === game.playerList.length) {
-        game.message = 'showPresident';
-        return game;
-      };
-      break;
-    case 'acknowledgePresident':
-      game.acknowledgeCounts.president++;
-      if (game.acknowledgeCounts.president === game.playerList.length) {
-        game.acknowledgeCounts.president = 0;
-        game.message = 'suggestChancellor';
-        return game;
-      };
-      break;
-    case 'acknowledgeChancellor':
-      game.acknowledgeCounts.chancellor++;
-      if (game.acknowledgeCounts.chancellor === game.playerList.length) {
-        game.acknowledgeCounts.chancellor = 0;
-        game.message = 'showPresidentPolicyCards';
-        return game;
-      };
-      break;
-    case 'acknowledgeChosenPolicy':
-      game.acknowledgeCounts.chosenPolicy++;
-      if (game.acknowledgeCounts.chosenPolicy === game.playerList.length) {
-        game.acknowledgeCounts.chosenPolicy = 0;
-        return shouldPresidentExecutePlayer(game);
-      };
-      break;
-    default:
-      return 'Unknown acknowledged message';
-  }
-}
-
 // playerId: the player suggested as chancellor
-exports.suggestChancellor = (game, playerId) => {
-  game.suggestedChancellor = playerId;
-  game.message = 'voteChancellor';
-  return game;
+exports.suggestChancellor = ({game, playerId}) => {
+  game.setSuggestedChancellor(playerId);
+  game.setMessage('voteChancellor');
 }
 
 // playerId: the player who voted
