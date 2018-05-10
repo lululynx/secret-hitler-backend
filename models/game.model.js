@@ -74,6 +74,19 @@ exports.Game = class Game {
     this.currentChancellor = null;
   }
 
+  evaluateElection() {
+    const jaVotes = this.playerList.filter(player => player.chancellorVote === 'ja');
+    if (jaVotes.length/this.chancellorVoteCount > 0.5) {
+      this.chancellor = this.suggestedChancellor;
+      this.suggestedChancellor = null;
+      return true;
+    } else {
+      ++this.electionFailCount;
+      return false;
+      // TODO: if electionFailCount reaches 4 serve the next policy immediately
+    }
+  }
+
   }
 
   set(prop, value) {
