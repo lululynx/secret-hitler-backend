@@ -42,6 +42,11 @@ exports.Game = class Game {
   setMessage(message) {
     this.message = message;
   }
+
+  setSuggestedChancellor(playerId) {
+    this.suggestedChancellor = playerId;
+  }
+
   }
 
   set(prop, value) {
