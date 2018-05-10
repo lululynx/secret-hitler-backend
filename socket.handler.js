@@ -11,7 +11,8 @@ const validateUser = (client, user) => {
   if (!user.name) client.emit('invalidUser', 'A user must have a name');
 }
 
-const validatePayload = (client, {gameId, playerId, user}) => {
+const validatePayload = (client, payload) => {
+  const {gameId, playerId, user} = payload;
   const game = gameList.get(gameId);
   if (!game) client.emit('gameNotFound', 'No game found with id ' + gameId);
   if (playerId && !game.getPlayer(playerId)) {
@@ -27,12 +28,13 @@ exports.socketHandler = (io) => {
 
     // meta methods
     client.on('metaChannel', (message, payload) => {
+      console.log(message, payload);
       validatePayload(client, payload);
       if (message === 'createGame') client.join(client.id);
       else if (message === 'joinGame') client.join(payload.gameId);
       else if (message === 'leaveGame') client.leave(payload.gameId);
       metaController[message](payload);
-      io.in(gameId).emit('metaChannel', payload.game);
+      io.in(payload.gameId).emit('metaChannel', payload.game);
     });
 
 
@@ -40,7 +42,7 @@ exports.socketHandler = (io) => {
     client.on('messageFromFrontEnd', (message, payload) => {
       validatePayload(payload);
       actionController[message](payload);
-      io.in(gameId).emit('newGameState', payload.game);
+      io.in(payload.gameId).emit('newGameState', payload.game);
     })
 
     client.on('disconnect', () => {
