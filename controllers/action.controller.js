@@ -1,14 +1,13 @@
 'use strict';
 
-const actionHelpers = require('./action.helpers');
+const Game = require('../models/game.model');
+const Player = require('../models/player.model');
 
-// playerId: the player suggested as chancellor
-const beginNewTurn = (game) => {
-  game.currentPresident = actionHelpers.setNextPresident(game);
-  game.currentChancellor = null;
-  actionHelpers.drawThreePolicies(game);
-  game.message = 'showPresident';
-  return game;
+const beginNewTurn = ({game}) => {
+  game.resetChancellor();
+  game.setNextPresident();
+  game.drawThreePolicies();
+  game.setMessage('showPresident');
 }
 
 const shouldPresidentExecutePlayer = (game) => {
