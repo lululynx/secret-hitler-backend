@@ -56,6 +56,10 @@ exports.Game = class Game {
     this.playerList.forEach(player => player.chancellorVote = null);
   }
 
+  incrementChancellorVoteCount() {
+    ++this.chancellorVoteCount;
+  }
+
   }
 
   set(prop, value) {
