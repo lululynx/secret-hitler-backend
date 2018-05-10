@@ -4,45 +4,29 @@ const io = require('./index');
 
 const metaController = require('./controllers/meta.controller');
 const actionController = require('./controllers/action.controller');
-
-const games = metaController.games;
+const {validatePayload}  = require('./socket.validation');
 
 exports.socketHandler = (io) => {
   io.on('connection', (client) => {
     console.log(`connected to client ${client.id}`);
 
     // meta methods
-    client.on('createGame', (user) => {
-      console.log('created game with id ', client.id);
-      client.join(client.id);
-      io.to(client.id).emit('gameCreated', metaController.createGame(client.id, user));
+    client.on('metaChannel', (message, payload) => {
+      const err = validatePayload(client, payload);
+      if (err) return client.emit('error', err);
+      payload.clientId = client.id;
+      if (message === 'createGame') client.join(client.id);
+      else if (message === 'joinGame') client.join(payload.gameId);
+      else if (message === 'leaveGame') client.leave(payload.gameId);
+      metaController[message](payload);
+      io.in(payload.game.id).emit('metaChannel', payload.game);
     });
-
-    client.on('joinGame', (gameId, user) => {
-      client.join(gameId);
-      io.to(gameId).emit('playerJoinedGame', metaController.joinGame(gameId, user));
-    });
-
-    client.on('startGame', (gameId) => {
-      io.to(gameId).emit('gameStarted', metaController.startGame(gameId));
-    });
-
-    client.on('leaveGame', (gameId, user) => {
-      io.to(gameId).emit('playerLeftGame', metaController.leaveGame());
-    });
-
 
     // action methods
-    client.on('messageFromFrontEnd', (message, payload) => {
-      const {gameId, playerId} = payload;
-      const game = games[gameId];
-      if (!game) io.to(gameId).emit('gameNotFound', 'No game found with id ' + gameId);
-      if (playerId && !game.getPlayer(playerId)) {
-        io.to(gameId).emit('playerNotFound', `Invalid player id ${playerId} for game with id ${gameId}`);
-      }
-      payload.game = game;
+    client.on('gameChannel', (message, payload) => {
+      validatePayload(payload);
       actionController[message](payload);
-      io.to(gameId).emit('newGameState', game);
+      io.in(payload.gameId).emit('gameChannel', payload.game);
     })
 
     client.on('disconnect', () => {

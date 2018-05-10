@@ -1,76 +1,28 @@
 'use strict';
 
-const getInitialGameState = require('../models/game.model').getInitialGameState;
-const createPlayer = require('../models/player.model').createPlayer;
+const {Game} = require('../models/game.model');
+const {gameList} = require('../models/gameList.model');
+const {Player} = require('../models/player.model');
 
-const actionHelpers = require('./action.helpers');
-
-const games = exports.games = {};
-
-const setPlayerFactions = (numberOfFascists, playerList) => {
-  let numberOfLiberals = playerList.length - numberOfFascists - 1;
-  playerList.forEach(player => {
-    if (player.hitler) return;
-    if (Math.random() * numberOfFascists > Math.random() * (numberOfLiberals)) {
-      player.faction = 'fascist';
-      --numberOfFascists;
-    } else {
-      player.faction = 'liberal';
-      --numberOfLiberals;
-    }
-  })
+exports.createGame = (payload) => {
+  const {clientId, user} = payload;
+  const game = new Game(clientId, user);
+  gameList.add(game);
+  payload.game = game;
 }
 
-const setRoles = (game) => {
-  const playerList = game.playerList;
-  const numberOfPlayers = playerList.length;
-
-  //sets number of fascists (excluding hitler)
-  const numberOfFascists = (numberOfPlayers > 8 ? 3 : numberOfPlayers > 6 ? 2 : 1);
-
-  //choose president
-  const presidentIndex = Math.floor(numberOfPlayers * Math.random());
-  playerList[presidentIndex].president = true;
-
-  //choose hitler
-  const hitlerIndex = Math.floor(numberOfPlayers * Math.random());
-  playerList[hitlerIndex].hitler = true;
-  playerList[hitlerIndex].faction = 'fascist';
-
-  setPlayerFactions(numberOfFascists, playerList);
+exports.joinGame = ({game, user}) => {
+  const player = new Player(user);
+  game.addPlayer(player);
 }
 
-exports.createGame = (clientId, user) => {
-  const player = createPlayer(user);
-  const game = {
-    id: clientId,
-    initiator: user,
-    playerList: [player],
-    ...getInitialGameState(),
-  };
-  games[game.id] = game;
-  return game;
+exports.startGame = ({game}) => {
+  game.setRoles();
+  game.assignPlayersFactions();
+  game.drawThreePolicies();
+  game.setMessage('showRoles');
 }
 
-exports.joinGame = (gameId, user) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
-  const player = createPlayer(user);
-  game.playerList.push(player);
-  return game;
-}
-
-exports.startGame = (gameId) => {
-  const game = games[gameId];
-  if (!game) return 'No game found with id ' + gameId;
-  setRoles(game);
-  actionHelpers.drawThreePolicies(game);
-  game.message = 'showRoles';
-  return game;
-}
-
-exports.leaveGame = (gameId, user) => {
-  const index = games[gameId].playerList.findIndex(player => player.user.id === user.id);
-  games[gameId].playerList.splice(index, 1);
-  return games[gameId];
+exports.leaveGame = ({game, user}) => {
+  game.removePlayer(player);
 }
