@@ -43,6 +43,17 @@ exports.Game = class Game {
     this.message = message;
   }
 
+  addPlayer(player) {
+    this.playerList.push(player);
+  }
+
+  // only works in the waiting room before the game starts
+  removePlayer(player) {
+    // TODO: handle the case where player leaves game in session
+    const index = this.playerList.findIndex(player => player.user.id === user.id);
+    this.playerList.splice(index, 1);
+  }
+
   setRoles() {
     const numberOfPlayers = this.playerList.length;
     //sets number of fascists (excluding hitler)
