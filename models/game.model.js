@@ -60,6 +60,10 @@ exports.Game = class Game {
     ++this.chancellorVoteCount;
   }
 
+  getPlayer(playerId) {
+    return this.playerList.find(player => player.user.id === playerId);
+  }
+
   }
 
   set(prop, value) {
