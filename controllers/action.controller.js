@@ -10,12 +10,12 @@ const beginNewTurn = ({game}) => {
   game.setMessage('showPresident');
 }
 
-const shouldPresidentExecutePlayer = (game) => {
-  if (game.numberOfFascistPolicies === 4 || game.numberOfFascistPolicies === 5) {
-    game.message = 'askPresidentToExecutePlayer';
-    return game;
+exports.acknowledge = ({game, message, countName}) => {
+  const response = game.incrementAcknowledgeCount(message, countName);
+  if (response) {
+    if (response === 'showPresident') beginNewTurn(game);
+    else game.setMessage(response)
   }
-  else beginNewTurn(game);
 }
 
 exports.acknowledge = (game, message) => {
