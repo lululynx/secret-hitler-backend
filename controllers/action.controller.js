@@ -25,20 +25,18 @@ exports.suggestChancellor = ({game, playerId}) => {
 }
 
 // playerId: the player who voted
-exports.voteOnChancellor = (game, playerId, vote) => {
+exports.voteOnChancellor = ({game, playerId, vote}) => {
   if (vote !== 'ja' || vote !== 'nein') return 'Invalid vote';
-  if (game.voteCount === game.playerList.length) {
-    actionHelpers.resetVotes(game);
+  if (game.voteComplete()) game.resetVotes();
+  const player = game.getPlayer(playerId);
+  player.castVote(vote);
+  game.incrementChancellorVoteCount();
+  if (game.voteComplete()) {
+    const electionPassed = game.evaluateElection();
+    if (electionPassed) game.setMessage('acknowledgeChancellor');
+    else beginNewTurn(game);
   }
-  const player = game.playerList.find(player => player.user.id === playerId);
-  if (!player) return 'No player found with id ' + playerId;
-  player.chancellorVote = vote;
-  game.voteCount++;
-  if (game.voteCount === game.playerList.length) {
-    actionHelpers.evaluateVotes(game);
   }
-  return game;
-}
 
 // used for both president and chancellor
 exports.pickPolicies = (game, playerId, rejectedPolicy) => {
