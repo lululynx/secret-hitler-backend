@@ -7,12 +7,10 @@ const io = require('socket.io')(server);
 
 require('./socket/handler').socketHandler(io);
 
-const ip = 'localhost';
-const port = process.env.localPort || 3000;
-server.listen(port, ip, (err) => {
+const port = process.env.PORT || 3000;
+server.listen(port, (err) => {
   if (err) throw err;
-  console.log(`Server running at http://${ip}:${port}`);
+  console.log(`Server running on port ${port}`);
 });
 
-
-module.exports = server; 
+module.exports = server;
