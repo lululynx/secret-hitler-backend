@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --watch test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -18,15 +18,18 @@
     "game",
     "socket.io"
   ],
-  "author": "Oscar Magnusson Luciu Joncourt, Kryshlynn Florante, Diego, Janosh Riebesell",
+  "author": "Oscar Magnusson, Luciu Joncourt, Kryshlynn Florante, Diego, Janosh Riebesell",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/JanoshRiebesell/secret-hitler-backend/issues"
   },
   "homepage": "https://github.com/JanoshRiebesell/secret-hitler-backend#readme",
   "dependencies": {
+    "chai": "^4.1.2",
     "dotenv": "^5.0.1",
+    "mocha": "^5.1.1",
     "nodemon": "^1.17.3",
+    "socket-tester": "^1.2.1",
     "socket.io": "^2.1.0"
   }
 }
