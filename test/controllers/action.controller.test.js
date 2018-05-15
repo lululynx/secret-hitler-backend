@@ -120,4 +120,20 @@ describe.only('Action controllers', function() {
     game.message.should.equal('acknowledgeChancellor');
   });
 
+  it('should get next player as president and set game message to showPresident if vote is not successful', () => {
+    const presidentIndex = game.playerList.findIndex(player => {
+      return player.user.id === game.currentPresident;
+    });
+    allPlayersVote('nein');
+    const newPresidentIndex = game.playerList.findIndex(player => {
+      return player.user.id === game.currentPresident;
+    });
+    if (presidentIndex === game.playerList.length - 1) {
+      newPresidentIndex.should.equal(0);
+    } else {
+      newPresidentIndex.should.equal(presidentIndex + 1);
+    }
+    game.message.should.equal('showPresident');
+  });
+
 });
