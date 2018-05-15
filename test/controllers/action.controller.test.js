@@ -113,4 +113,11 @@ describe.only('Action controllers', function() {
     game.suggestedChancellor.should.equal(suggestedChancellorId);
     game.message.should.equal('voteChancellor');
   });
+
+  it('should set game.currentChancellor to new chancellor and game message to acknowledgeChancellor if vote is successful', () => {
+    allPlayersVote('ja');
+    game.currentChancellor.should.equal(suggestedChancellorId);
+    game.message.should.equal('acknowledgeChancellor');
+  });
+
 });
