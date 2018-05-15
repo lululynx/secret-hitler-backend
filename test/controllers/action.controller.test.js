@@ -154,4 +154,14 @@ describe.only('Action controllers', function() {
     game.message.should.equal('showChancellorPolicyCards');
   });
 
+  it('should set game message to "showPlayersChosenPolicy" when chancellor picks rejected policy', () => {
+    const pickPoliciesPayload = {
+      game: game,
+      playerId: game.currentChancellor,
+      rejectedPolicy: 0
+    }
+    actionController.pickPolicies(pickPoliciesPayload);
+    game.message.should.equal('showPlayersChosenPolicy');
+  });
+  
 });
