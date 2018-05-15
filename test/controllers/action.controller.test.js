@@ -107,4 +107,10 @@ describe.only('Action controllers', function() {
 
   });
 
+  it('should set suggestedChancellor when president has suggested a chancellor and game message to "voteOnChancellor', () => {
+    suggestedChancellorId = game.playerList[2].president ? users.user1.id : users.user3.id;
+    actionController.suggestChancellor({game: game, playerId: suggestedChancellorId});
+    game.suggestedChancellor.should.equal(suggestedChancellorId);
+    game.message.should.equal('voteChancellor');
+  });
 });
