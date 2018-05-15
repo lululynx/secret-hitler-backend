@@ -136,4 +136,11 @@ describe.only('Action controllers', function() {
     game.message.should.equal('showPresident');
   });
 
+  it('should set game message to "showPresidentPolicyCard" when acknowledging Chancellor is done', () => {
+    for (let i = 0; i < 5; i++) {
+      actionController.acknowledge(acknowledgeChancellorPayload);
+    }
+    game.message.should.equal('showPresidentPolicyCards');
+  });
+  
 });
