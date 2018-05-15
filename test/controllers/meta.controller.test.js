@@ -1,10 +1,8 @@
-const assert = require('assert');
 const expect = require('chai').expect;
 const io = require('socket.io-client');
 
-const app = require('../../index');
+const server = require('../../index');
 
-const SocketTester = require('../index');
 const socketUrl = 'http://localhost:3000';
 
 const options = {  
@@ -12,72 +10,50 @@ const options = {
   'force new connection': true
 };
 
-const socketTester = new SocketTester(io, socketUrl, options);
 const room = 'lobby';
 
-describe('Sockets', function() {
-  describe('createGame()', function() {
-    it('should send and receive a message', function(done){  
-      const client1 = {
-        on: {
-          'message': socketTester.shouldBeCalledWith('test')
-        },
-        emit: {
-          'join room': room
-        }
-      };
-  
-      const client2 = { 
-        emit: {
-          'join room': room,
-          'message': 'test'
-        }
-      };
-  
-      socketTester.run([client1, client2], done);
+describe('Sockets', function () {  
+  let client1, client2, client3, client4, client5;
+  let currentGame;
+
+  afterEach(done => {
+    client1 && client1.disconnect();
+    client2 && client2.disconnect();
+    client3 && client3.disconnect();
+    client4 && client4.disconnect();
+    client5 && client5.disconnect();
+    server.close();
+    done();
+  });
+
+  it('should send a game object back when message is "createGame"', done => {
+    client1 = io.connect(socketUrl, options);
+    client1.on('metaChannel', game => {
+      currentGame = game;
+      expect(game).to.be.a('object');
+      done();
     });
-  
-    it('should send and recieve a message only to users in the same room', function (done) {
-  
-      const client1 = {
-        on: {
-          'message': socketTester.shouldBeCalledNTimes(1)
-        },
-        emit: {
-          'join room': room,
-        }
-      };
-  
-      const client2 = {
-        emit: {
-          'join room': room,
-          'message': 'test'
-        }
-      };
-  
-      const client3 = { 
-        on: {
-          'message': socketTester.shouldNotBeCalled()
-        },
-        emit: {
-          'join room': 'room'
-        }
-      };
-  
-      socketTester.run([client1, client2, client3], done);
+    client1.emit('metaChannel', 'createGame', {user: {name: 'Pelle', id: '1234'}});
+  });
+
+  it('should be able to join existing game and listen to backend', done => {
+    client2 = io.connect(socketUrl, options);
+    client2.on('metaChannel', game => {
+      expect(game.playerList.length).to.equal(2);
+      done();
+    });
+    client2.emit('metaChannel', 'joinGame', {gameId: currentGame.id, user: {name: 'Martin', id: '3242'}});
+  });
+
+  it('should be able to start game', done => {
+    client1 = io.connect(socketUrl, options);   
+    
+    client1.on('metaChannel', game => {
+      expect(game.message).to.equal('showRoles');
+      done();
     });
 
-
-
-
-    it('should return -1 when the value is not present', function() {
-      assert.equal([1,2,3].indexOf(4), -1);
-    });
-    it('should return -1 when the value is not present', function() {
-      assert.equal([1,2,3].indexOf(4), -1);
-    });
-    it('should return -1 when the value is not present', function() {
-      assert.equal([1,2,3].indexOf(4), -1);
-    });
+    client1.emit('metaChannel', 'startGame', {gameId: currentGame.id, user: {name: 'Pelle', id: '1234'}});
   });
 });
+
