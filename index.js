@@ -12,3 +12,5 @@ server.listen(port, (err) => {
   if (err) throw err;
   console.log(`Server running on port ${port}`);
 });
+
+module.exports = server;
