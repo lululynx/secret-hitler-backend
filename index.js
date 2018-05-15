@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const server = require('http').createServer();
 const io = require('socket.io')(server);
+io.origins(['*:*']);
 
 require('./socket/handler').socketHandler(io);
 
