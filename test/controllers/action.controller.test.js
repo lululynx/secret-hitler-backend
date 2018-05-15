@@ -143,4 +143,15 @@ describe.only('Action controllers', function() {
     game.message.should.equal('showPresidentPolicyCards');
   });
   
+  it('should change game.eligiblePolicies from 3 to 2 cards and set game message to "showChancellorPolicyCards when president picks rejected policy', () => {
+    const pickPoliciesPayload = {
+      game: game,
+      playerId: game.currentPresident,
+      rejectedPolicy: 1
+    }
+    actionController.pickPolicies(pickPoliciesPayload);
+    game.eligiblePolicies.length.should.equal(2);
+    game.message.should.equal('showChancellorPolicyCards');
+  });
+
 });
