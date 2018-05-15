@@ -32,7 +32,10 @@ const getInitialGameState = () => {
 
 exports.Game = class Game {
   constructor(clientId, user) {
-    if (!clientId || !user) throw Error('Invalid call of Game constructor');
+    if (!clientId || !user) {
+      console.log(`Invalid call of Game constructor: received ${clientId} as clientId and ${user} as user`);
+      return null;
+    }
     this.id = clientId;
     this.initiator = user;
     this.playerList = [new Player(user)];
@@ -49,8 +52,9 @@ exports.Game = class Game {
   }
 
   // only works in the waiting room before the game starts
-  removePlayer(player) {
+  removePlayer(user) {
     // TODO: handle the case where player leaves game in session
+    console.log('user', user);
     const index = this.playerList.findIndex(player => player.user.id === user.id);
     this.playerList.splice(index, 1);
   }
