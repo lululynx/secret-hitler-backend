@@ -164,4 +164,9 @@ describe.only('Action controllers', function() {
     game.message.should.equal('showPlayersChosenPolicy');
   });
   
+  it('should should ask president to execute player when all players have acknowledged chosen policy and 4 or 5 fascist policies have been enacted', () => {
+    game.numberOfFascistPolicies = 4;
+    for (let i = 0; i < 5; i++) actionController.acknowledge(acknowledgeChosenPolicyPayload);
+    game.message.should.equal('askPresidentToExecutePlayer');
+  });
 });
