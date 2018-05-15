@@ -70,14 +70,6 @@ const acknowledgeChosenPolicyPayload = {
   message: 'acknowledgeChosenPolicy',
   countName: 'chosenPolicy'
 }
-  message: 'acknowledgeChancellor',
-  countName: 'chancellor'
-}
-const acknowledgeChosenPolicyPayload = {
-  game: game,
-  message: 'acknowledgeChosenPolicy',
-  countName: 'chosenPolicy'
-}
 
 const allPlayersVote = (vote) => {
   actionController.voteOnChancellor({game: game, playerId: users.user1.id, vote: vote});
