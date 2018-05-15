@@ -36,6 +36,14 @@ const startGamePayload = {
   user: users.user1
 }
 
+metaController.createGame(startGamePayload);
+
+const gameId = '1234';
+const game = gameList.get(gameId);
+
+for (let i = 2; i < 6; i++) metaController.joinGame({game: game, user: users['user' + i]});
+
+metaController.startGame({game: game});
 
 const acknowledgeFascistsPayload = {
   game: game,
@@ -62,3 +70,41 @@ const acknowledgeChosenPolicyPayload = {
   message: 'acknowledgeChosenPolicy',
   countName: 'chosenPolicy'
 }
+  message: 'acknowledgeChancellor',
+  countName: 'chancellor'
+}
+const acknowledgeChosenPolicyPayload = {
+  game: game,
+  message: 'acknowledgeChosenPolicy',
+  countName: 'chosenPolicy'
+}
+
+const allPlayersVote = (vote) => {
+  actionController.voteOnChancellor({game: game, playerId: users.user1.id, vote: vote});
+  actionController.voteOnChancellor({game: game, playerId: users.user2.id, vote: vote});
+  actionController.voteOnChancellor({game: game, playerId: users.user3.id, vote: vote});
+  actionController.voteOnChancellor({game: game, playerId: users.user4.id, vote: vote});
+  actionController.voteOnChancellor({game: game, playerId: users.user5.id, vote: vote});
+}
+
+let suggestedChancellorId;
+
+describe.only('Action controllers', function() {
+
+  after(() => {
+    server.close();
+  })
+
+  it('should set game message to correct game messages when acknowledging roles, fascists and president are done', () => {
+    for (let i = 0; i < 5; i++) actionController.acknowledge(acknowledgePlayerRolePayload);
+    game.message.should.equal('showFascists');
+
+    for (let i = 0; i < 5; i++) actionController.acknowledge(acknowledgeFascistsPayload);
+    game.message.should.equal('showPresident');
+
+    for (let i = 0; i < 5; i++) actionController.acknowledge(acknowledgePresidentPayload);
+    game.message.should.equal('suggestChancellor');
+
+  });
+
+});
