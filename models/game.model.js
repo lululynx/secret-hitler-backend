@@ -68,6 +68,7 @@ exports.Game = class Game {
     const presidentIndex = Math.floor(numberOfPlayers * Math.random());
     let player = this.playerList[presidentIndex];
     player.makePresident();
+    this.currentPresident = player.user.id;
     //choose hitler
     const hitlerIndex = Math.floor(numberOfPlayers * Math.random());
     player = this.playerList[hitlerIndex];
@@ -124,7 +125,7 @@ exports.Game = class Game {
   evaluateElection() {
     const jaVotes = this.playerList.filter(player => player.chancellorVote === 'ja');
     if (jaVotes.length/this.chancellorVoteCount > 0.5) {
-      this.chancellor = this.suggestedChancellor;
+      this.currentChancellor = this.suggestedChancellor;
       this.suggestedChancellor = null;
       return true;
     } else {
@@ -136,9 +137,9 @@ exports.Game = class Game {
 
   setNextPresident() {
     const presidentIndex = this.playerList.findIndex(player => {
-      return player.id === this.currentPresident;
+      return player.user.id === this.currentPresident;
     });
-    if (presidentIndex === (playerList.length - 1)) {
+    if (presidentIndex === (this.playerList.length - 1)) {
       this.currentPresident = this.playerList[0].user.id;
     } else {
       this.currentPresident = this.playerList[presidentIndex + 1].user.id;
@@ -151,8 +152,8 @@ exports.Game = class Game {
 
   enactPolicy() {
     this.eligiblePolicies.pop() === 'fascist'
-      ? ++game.numberOfFascistPolicies
-      : ++game.numberOfLiberalPolicies;
+      ? ++this.numberOfFascistPolicies
+      : ++this.numberOfLiberalPolicies;
   }
 
   playerIsPresident(playerId) {
@@ -160,7 +161,7 @@ exports.Game = class Game {
   }
 
   playerIsChancellor(playerId) {
-    return this.currentPresident === playerId;
+    return this.currentChancellor === playerId;
   }
 
   activateVetoPowerIfAppropriate() {
@@ -191,14 +192,14 @@ exports.Game = class Game {
     }
   }
 
-  handleAcknowledgeCountReached(message) {
+  handleAcknowledgeCountReached(message, countName) {
     this.acknowledgeCounts[countName] = 0;
     const messageMap = {
       acknowledgePlayerRole: 'showFascists',
       acknowledgeFascists: 'showPresident',
       acknowledgePresident: 'suggestChancellor',
       acknowledgeChancellor: 'showPresidentPolicyCards',
-      acknowledgeChosenPolicy: presidentShouldExecutePlayer() ? 'askPresidentToExecutePlayer' : 'showPresident',
+      acknowledgeChosenPolicy: this.presidentShouldExecutePlayer() ? 'askPresidentToExecutePlayer' : 'showPresident',
     }
     return messageMap[message];
   }

@@ -3,7 +3,7 @@
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
 
-const beginNewTurn = ({game}) => {
+const beginNewTurn = (game) => {
   game.resetChancellor();
   game.setNextPresident();
   game.drawThreePolicies();
@@ -26,7 +26,7 @@ exports.suggestChancellor = ({game, playerId}) => {
 
 // playerId: the player who voted
 exports.voteOnChancellor = ({game, playerId, vote}) => {
-  if (vote !== 'ja' || vote !== 'nein') return 'Invalid vote';
+  if (vote !== 'ja' && vote !== 'nein') return 'Invalid vote';
   if (game.voteComplete()) game.resetVotes();
   const player = game.getPlayer(playerId);
   player.castVote(vote);

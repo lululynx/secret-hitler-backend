@@ -10,7 +10,7 @@ exports.Player = class Player {
   }
 
   castVote(vote) {
-    player.chancellorVote = vote;
+    this.chancellorVote = vote;
   }
 
   execute() {
