@@ -14,6 +14,7 @@ exports.createGame = (payload) => {
 exports.joinGame = ({game, user}) => {
   const player = new Player(user);
   game.addPlayer(player);
+  console.log('game joined');
 }
 
 exports.startGame = ({game}) => {
@@ -24,5 +25,5 @@ exports.startGame = ({game}) => {
 }
 
 exports.leaveGame = ({game, user}) => {
-  game.removePlayer(player);
+  game.removePlayer(user);
 }

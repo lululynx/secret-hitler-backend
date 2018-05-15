@@ -5,7 +5,7 @@ require('dotenv').config();
 const server = require('http').createServer();
 const io = require('socket.io')(server);
 
-require('./socket.handler').socketHandler(io);
+require('./socket/handler').socketHandler(io);
 
 if (!module.parent) {
   const ip = 'localhost';
