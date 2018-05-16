@@ -18,7 +18,9 @@ exports.socketHandler = (io) => {
       const error = validatePayload(type, payload);
       if (error) return client.emit('message', {type: 'exception', text: error});
 
+      console.log(type, 'PAYLOAD:', payload);
       if (type === 'createGame') {
+        console.log('BOYYYYYYYYYYAAAAAAAAAA')
         client.join(client.id);
         payload.clientId = client.id;
       }
