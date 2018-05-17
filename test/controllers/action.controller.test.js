@@ -81,7 +81,7 @@ const allPlayersVote = (vote) => {
 
 let suggestedChancellorId;
 
-describe.only('Action controllers', function() {
+describe('Action controllers', function() {
 
   after(() => {
     server.close();
