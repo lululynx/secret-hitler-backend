@@ -28,6 +28,9 @@ exports.socketHandler = (io) => {
       if (metaController[type]) metaController[type](payload);
       else if (actionController[type]) actionController[type](payload);
 
+      const acknowledgeCount = payload.game.acknowledgeCounts[payload.countName];
+      const playerCount = payload.game.playerList.length;
+      if (type !== 'acknowledge' || acknowledgeCount >= playerCount)
       io.in(payload.game.id).emit('data', {type: 'game', payload: payload.game});
     });
 
