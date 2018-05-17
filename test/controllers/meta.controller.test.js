@@ -3,6 +3,7 @@ const io = require('socket.io-client');
 
 const server = require('../../index');
 
+const mocks = require('../mocks');
 const socketUrl = 'http://localhost:3000';
 
 const options = {  
@@ -10,50 +11,78 @@ const options = {
   'force new connection': true
 };
 
-const room = 'lobby';
+const connectClients = (n) => {
+  const clients = [];
+  for (let i = 0; i < n; i++) {
+    const client = io.connect(socketUrl, options)
+    clients.push(client);
+  }
+  return clients
+}
 
-describe('Sockets', function () {  
-  let client1, client2, client3, client4, client5;
+const createGame = (client) => {
+  client.emit('data', {type: 'createGame', payload: {user: mocks.users[0]}});
+}
+
+const joinGame = (clients, game, n, index) => {
+  for (let i = 0; i < n; i++) {
+    clients[i].emit('data', {type:'joinGame', payload: {gameId: game.id, user: mocks.users[i+index]}});
+  }
+}
+
+const startGame = (clients, game) => {
+  clients[0].emit('data', {type: 'startGame', payload: {gameId: game.id, user: mocks.users[0]}});
+}
+
+const disconnectClients = (clients) => {
+  clients.forEach(client => client && client.disconnect());
+}
+
+
+describe.only('Sockets', function () {  
+  let clients = [];
   let currentGame;
 
-  afterEach(done => {
-    client1 && client1.disconnect();
-    client2 && client2.disconnect();
-    client3 && client3.disconnect();
-    client4 && client4.disconnect();
-    client5 && client5.disconnect();
+  after(() => {
     server.close();
+  })
+
+  afterEach(done => {
+    disconnectClients(clients);
     done();
   });
 
-  it('should send a game object back when message is "createGame"', done => {
-    client1 = io.connect(socketUrl, options);
-    client1.on('metaChannel', game => {
-      currentGame = game;
-      expect(game).to.be.a('object');
+  it('should send a game object back when type is "createGame"', done => {
+    clients = connectClients(1);
+    clients[0].on('data', data => {
+      currentGame = data.payload;
+      expect(currentGame).to.be.a('object');
       done();
     });
-    client1.emit('metaChannel', 'createGame', {user: {name: 'Pelle', id: '1234'}});
+    createGame(clients[0]);
   });
 
   it('should be able to join existing game and listen to backend', done => {
-    client2 = io.connect(socketUrl, options);
-    client2.on('metaChannel', game => {
-      expect(game.playerList.length).to.equal(2);
+    clients = connectClients(1);
+    clients[0].on('data', data => {
+      currentGame = data.payload;
+      expect(currentGame.playerList.length).to.equal(2);
       done();
     });
-    client2.emit('metaChannel', 'joinGame', {gameId: currentGame.id, user: {name: 'Martin', id: '3242'}});
+    joinGame(clients, currentGame, 1, 1)
   });
 
-  it('should be able to start game', done => {
-    client1 = io.connect(socketUrl, options);   
-    
-    client1.on('metaChannel', game => {
-      expect(game.message).to.equal('showRoles');
-      done();
+  it('should be able to start game when five or more people', done => {
+    clients = connectClients(4);
+    clients[0].on('data', data => {
+      currentGame = data.payload;
+      if (currentGame.numberOfLiberals) {
+        expect(currentGame.message).to.equal('showRoles');
+        done();
+      }
     });
-
-    client1.emit('metaChannel', 'startGame', {gameId: currentGame.id, user: {name: 'Pelle', id: '1234'}});
+    joinGame(clients, currentGame, 3, 2);
+    startGame(clients, currentGame);
   });
 });
 
