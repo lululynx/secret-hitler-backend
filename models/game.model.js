@@ -25,7 +25,7 @@ const getInitialGameState = () => {
     vetoPowerUnlocked: false,
     gameOver: false,
     winningFaction: undefined,
-    askPresidentToExecutePlayer: true,
+    askPresidentToExecutePlayer: false,
     executedPlayers: [],
   }
 }
