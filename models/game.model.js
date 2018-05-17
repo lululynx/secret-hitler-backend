@@ -54,7 +54,6 @@ exports.Game = class Game {
   // only works in the waiting room before the game starts
   removePlayer(user) {
     // TODO: handle the case where player leaves game in session
-    console.log('user', user);
     const index = this.playerList.findIndex(player => player.user.id === user.id);
     this.playerList.splice(index, 1);
   }
@@ -81,7 +80,7 @@ exports.Game = class Game {
     let numberOfLiberals = this.numberOfLiberals;
     this.playerList.forEach(player => {
       if (player.isHitler()) return;
-      if (Math.random() * numberOfFascists > Math.random() * numberOfLiberals) {
+      if (Math.random() * (numberOfFascists - 1) > Math.random() * numberOfLiberals) {
         player.makeFascist();
         --numberOfFascists;
       } else {
@@ -187,7 +186,7 @@ exports.Game = class Game {
 
   incrementAcknowledgeCount(message, countName) {
     ++this.acknowledgeCounts[countName];
-    if (this.acknowledgeCounts[countName] === this.playerList.length) {
+    if (this.acknowledgeCounts[countName] >= this.playerList.length) {
       return this.handleAcknowledgeCountReached(message);
     }
   }
